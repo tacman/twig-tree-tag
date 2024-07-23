@@ -11,8 +11,8 @@ class TreeExtension extends AbstractExtension implements ExtensionInterface
 {
     public function __construct()
     {
-        if (version_compare(PHP_VERSION, '5.4.0', '<')) {
-            throw new \LogicException('The {%tree%} Twig tag requires PHP version 5.4 or higher');
+        if (version_compare(PHP_VERSION, '8.1.0', '<')) {
+            throw new \LogicException('The {%tree%} Twig tag requires PHP version 8.1 or higher');
         }
     }
 
@@ -21,12 +21,4 @@ class TreeExtension extends AbstractExtension implements ExtensionInterface
         return [new TreeTokenParser()];
     }
 
-//    public function getName() {
-//        return 'tree';
-//    }
-
-    public function getOperators(): array
-    {
-        return [];
-    }
 }
