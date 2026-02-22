@@ -2,16 +2,18 @@
 
 namespace JordanLev\TwigTreeTag\Twig\Node;
 
+use Twig\Attribute\YieldReady;
 use Twig\Compiler;
 use Twig\Node\Expression\AbstractExpression;
-use Twig\Node\Expression\AssignNameExpression;
+use Twig\Node\Expression\Variable\AssignContextVariable;
 use Twig\Node\Node;
 
+#[YieldReady]
 class TreeNode extends Node
 {
-    public function __construct(AssignNameExpression $keyTarget, AssignNameExpression $valueTarget, AbstractExpression $seq,  string $as, array $data, int $lineno, string $tag)
+    public function __construct(AssignContextVariable $keyTarget, AssignContextVariable $valueTarget, AbstractExpression $seq, string $as, array $data, int $lineno)
     {
-        parent::__construct(['key_target'   => $keyTarget, 'value_target' => $valueTarget, 'seq'          => $seq], ['data'         => $data, 'as'           => $as], $lineno, $tag);
+        parent::__construct(['key_target' => $keyTarget, 'value_target' => $valueTarget, 'seq' => $seq], ['data' => $data, 'as' => $as], $lineno);
     }
 
     public function compile(Compiler $compiler): void

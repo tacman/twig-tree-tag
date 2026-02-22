@@ -3,7 +3,7 @@
 namespace JordanLev\TwigTreeTag\Twig\TokenParser;
 
 use JordanLev\TwigTreeTag\Twig\Node\TreeNode;
-use Twig\Node\Expression\AssignNameExpression;
+use Twig\Node\Expression\Variable\AssignContextVariable;
 use Twig\TokenParser\AbstractTokenParser;
 use Twig\Node\Node;
 use Twig\Token;
@@ -22,9 +22,9 @@ class TreeTokenParser extends AbstractTokenParser
         $stream   = $this->parser->getStream();
 
         // key, item in items
-        $targets  = $this->parser->getExpressionParser()->parseAssignmentExpression();
+        $targets  = $this->parseAssignmentExpression();
         $stream->expect(Token::OPERATOR_TYPE, 'in');
-        $seq      = $this->parser->getExpressionParser()->parseExpression();
+        $seq      = $this->parser->parseExpression();
 
         // as treeA
         $as = 'default';
@@ -45,7 +45,7 @@ class TreeTokenParser extends AbstractTokenParser
             if ($stream->next()->getValue() == 'subtree') {
 
                 // item
-                $child = $this->parser->getExpressionParser()->parseExpression();
+                $child = $this->parser->parseExpression();
 
                 // with treeA
                 $with = $as;
@@ -69,19 +69,19 @@ class TreeTokenParser extends AbstractTokenParser
         }
 
         // key, item
-        if ((is_countable($targets) ? count($targets) : 0) > 1) {
-            $keyTarget   = $targets->getNode(0);
-            $keyTarget   = new AssignNameExpression($keyTarget->getAttribute('name'), $keyTarget->getTemplateLine());
-            $valueTarget = $targets->getNode(1);
-            $valueTarget = new AssignNameExpression($valueTarget->getAttribute('name'), $valueTarget->getTemplateLine());
+        if (count($targets) > 1) {
+            $keyTarget   = $targets->getNode('0');
+            $keyTarget   = new AssignContextVariable($keyTarget->getAttribute('name'), $keyTarget->getTemplateLine());
+            $valueTarget = $targets->getNode('1');
+            $valueTarget = new AssignContextVariable($valueTarget->getAttribute('name'), $valueTarget->getTemplateLine());
 
         // (implicit _key,) item
         } else {
-            $keyTarget   = new AssignNameExpression('_key', $lineno);
-            $valueTarget = $targets->getNode(0);
-            $valueTarget = new AssignNameExpression($valueTarget->getAttribute('name'), $valueTarget->getTemplateLine());
+            $keyTarget   = new AssignContextVariable('_key', $lineno);
+            $valueTarget = $targets->getNode('0');
+            $valueTarget = new AssignContextVariable($valueTarget->getAttribute('name'), $valueTarget->getTemplateLine());
         }
 
-        return new TreeNode($keyTarget, $valueTarget, $seq, $as, $data, $lineno, $this->getTag());
+        return new TreeNode($keyTarget, $valueTarget, $seq, $as, $data, $lineno);
     }
 }
