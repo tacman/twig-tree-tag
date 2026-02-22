@@ -7,7 +7,7 @@ use Twig\Environment;
 use Twig\Extension\AbstractExtension;
 use Twig\Extension\ExtensionInterface;
 
-class TreeExtension extends AbstractExtension implements ExtensionInterface
+class TreeExtension extends AbstractExtension
 {
     public function __construct()
     {
